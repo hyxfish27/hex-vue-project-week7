@@ -30,6 +30,10 @@ const routes = [
     component: () => import('../views/Dashboard/DashboardView.vue'),
     children: [
       {
+        path: 'products',
+        component: () => import('../views/UserProductsView')
+      },
+      {
         path: 'cart',
         component: () => import('../views/UserCart.vue')
       }
