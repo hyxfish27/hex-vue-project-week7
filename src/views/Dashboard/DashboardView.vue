@@ -1,16 +1,26 @@
 <template>
-  <TopNavbar></TopNavbar>
+  <DashboardNav></DashboardNav>
   <!-- <h3 class="h3 text-center mt-4">後台首頁</h3> -->
+  <button type="button" class="btn btn-primary">Primary</button>
+  <button type="button" class="btn btn-secondary">Secondary</button>
+  <button type="button" class="btn btn-success">Success</button>
+  <button type="button" class="btn btn-danger">Danger</button>
+  <button type="button" class="btn btn-warning">Warning</button>
+  <button type="button" class="btn btn-info">Info</button>
+  <button type="button" class="btn btn-light">Light</button>
+  <button type="button" class="btn btn-dark">Dark</button>
+
+  <button type="button" class="btn btn-link">Link</button>
   <!-- 有權限才能顯示後台頁面 -->
   <router-view v-if="adminStatus"></router-view>
 </template>
 
 <script>
-import TopNavbar from '@/components/TopNavbar.vue'
+import DashboardNav from '@/components/DashboardNav.vue'
 
 export default {
   components: {
-    TopNavbar
+    DashboardNav
   },
   data () {
     return {

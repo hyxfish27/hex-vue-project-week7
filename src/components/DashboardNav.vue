@@ -24,6 +24,9 @@
             </router-link>
           </div>
           <div class="navbar-nav ms-auto">
+            <router-link class="nav-link" to="/user/products">
+              前台商品
+            </router-link>
             <router-link class="nav-link" to="/user/cart">
               購物車
             </router-link>
