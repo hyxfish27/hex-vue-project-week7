@@ -199,7 +199,11 @@
           <button
             type="button"
             class="btn btn-primary"
-            @click="isNew ? addProduct() : updateProduct()"
+            @click="
+              isNew
+                ? $emit('add-product', tempProduct)
+                : $emit('update-product', tempProduct)
+            "
           >
             確認
           </button>
@@ -210,65 +214,80 @@
 </template>
 
 <script>
-// 需要匯入 Modal 元件
-import Modal from 'bootstrap/js/dist/modal'
+// 在 modal 元件呼叫 mixin 方法
+import modalMixin from '@/mixins/modalMixin'
 
 export default {
   data () {
     return {
-      productModal: ''
     }
   },
   props: ['temp-product', 'is-new'],
+  mixins: [modalMixin],
   methods: {
-    addProduct () {
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product`
-      this.$http
-        .post(url, { data: this.tempProduct })
-        .then(res => {
-          // 發送 get-product 到外層呼叫 getProducts 方法
-          this.$emit('get-products')
-          alert(res.data.message)
-        })
-        .catch(err => {
-          alert(err.data.message)
-        })
-      this.hideProductModal()
-    },
-    updateProduct () {
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${this.tempProduct.id}`
-      this.$http
-        .put(url, { data: this.tempProduct })
-        .then(res => {
-          this.$emit('get-products')
-          alert(res.data.message)
-        })
-        .catch(err => {
-          alert(err.data.message)
-        })
-      this.hideProductModal()
-    },
-    createModal () {
-      // 將元件中的 ref="modal" 進行 Modal 的初始化，
-      // 並 assign 到 data 中的 productModal
-      this.productModal = new Modal(this.$refs.modal)
-    },
-    openProductModal () {
-      this.productModal.show()
-    },
-    hideProductModal () {
-      this.productModal.hide()
-    },
+    // addProduct () {
+    //   const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product`
+    //   this.$http
+    //     .post(url, { data: this.tempProduct })
+    //     .then(res => {
+    //       // 發送 get-product 到外層呼叫 getProducts 方法
+    //       this.$emit('get-products')
+    //       // this.emitter.emit('push-message', {
+    //       //   style: 'success',
+    //       //   title: '新增產品成功',
+    //       //   content: res.data.message
+    //       // })
+    //       // alert(res.data.message)
+    //     })
+    //     .catch(err => {
+    //       alert(err.data.message)
+    //     })
+    //   this.hideProductModal()
+    // },
+    // updateProduct () {
+    //   const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${this.tempProduct.id}`
+    //   this.$http
+    //     .put(url, { data: this.tempProduct })
+    //     .then(res => {
+    //       // this.emitter.emit('push-message', {
+    //       //   style: 'success',
+    //       //   title: '編輯產品成功',
+    //       //   content: res.data.message
+    //       // })
+    //       this.$emit('get-products')
+    //       // alert(res.data.message)
+    //     })
+    //     .catch(err => {
+    //       // this.emitter.emit('push-message', {
+    //       //   style: 'success',
+    //       //   title: '編輯產品成功',
+    //       //   content: err.data.message
+    //       // })
+    //       alert(err.data.message)
+    //     })
+    //   this.hideProductModal()
+    // }
+    // // createModal () {
+    //   // 將元件中的 ref="modal" 進行 Modal 的初始化，
+    //   // 並 assign 到 data 中的 productModal
+    //   // this.productModal = new Modal(this.$refs.modal)
+    // },
+    // openProductModal () {
+    //   this.productModal.show()
+    // },
+    // hideProductModal () {
+    //   this.productModal.hide()
+    // },
     // initial imagesUrl Array
-    initialImgArray () {
-      // console.log(Array.isArray(this.tempProduct.imagesUrl))
-      // false則進行初始化
-      this.tempProduct.imagesUrl = []
-      this.tempProduct.imagesUrl.push('')
-    }
+    // initialImgArray () {
+    //   // console.log(Array.isArray(this.tempProduct.imagesUrl))
+    //   // false則進行初始化
+    //   this.tempProduct.imagesUrl = []
+    //   this.tempProduct.imagesUrl.push('')
+    // }
   },
   mounted () {
-    this.createModal()
+    // this.createModal()
   }
 }
 </script>
