@@ -22,7 +22,7 @@
         </div>
         <div class="modal-body">
           是否刪除
-          <strong class="text-danger">{{ tempProduct.title }}</strong>
+          <strong class="text-danger">{{ delItem.title }}</strong>
           商品(刪除後將無法恢復)。
         </div>
         <div class="modal-footer">
@@ -36,7 +36,7 @@
           <button
             type="button"
             class="btn btn-danger"
-            @click="removeProduct(tempProduct.id)"
+            @click="$emit('remove-item', delItem.id)"
           >
             確認刪除
           </button>
@@ -47,42 +47,12 @@
 </template>
 
 <script>
-// 需要匯入 Modal 元件
-import Modal from 'bootstrap/js/dist/modal'
+// 在 modal 元件呼叫 mixin 方法
+import modalMixin from '@/mixins/modalMixin'
 
 export default {
-  data () {
-    return {
-      delProductModal: ''
-    }
-  },
-  props: ['temp-product'],
-  methods: {
-    removeProduct (id) {
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${this.tempProduct.id}`
-      this.$http
-        .delete(url)
-        .then(res => {
-          alert(res.data.message)
-          this.$emit('get-products')
-        })
-        .catch(err => {
-          alert(err.data.message)
-        })
-      this.closeDelProductModal()
-    },
-    openDelProductModal () {
-      this.delProductModal.show()
-    },
-    closeDelProductModal () {
-      this.delProductModal.hide()
-    },
-    createModal () {
-      this.delProductModal = new Modal(this.$refs.modal)
-    }
-  },
-  mounted () {
-    this.createModal()
-  }
+  props: ['del-item'],
+  // 宣告所使用的 mixin 方法
+  mixins: [modalMixin]
 }
 </script>
