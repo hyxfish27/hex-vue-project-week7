@@ -14,8 +14,6 @@ import VueAxios from 'vue-axios'
 import App from './App.vue'
 import router from './router'
 
-// import { BootstrapIconsPlugin } from 'bootstrap-icons-vue'
-
 Object.keys(AllRules).forEach((rule) => {
   defineRule(rule, AllRules[rule])
 })
@@ -35,7 +33,6 @@ app.component('Form', Form)
 app.component('Field', Field)
 app.component('ErrorMessage', ErrorMessage)
 
-// app.use(BootstrapIconsPlugin)
 app.use(router)
 app.use(VueAxios, axios)
 app.mount('#app')
