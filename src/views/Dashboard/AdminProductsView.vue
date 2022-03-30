@@ -36,9 +36,24 @@
           <td>{{ product.title }}</td>
           <td class="text-end">{{ product.origin_price }}</td>
           <td class="text-end">{{ product.price }}</td>
-          <td @click="product.is_enabled = !product.is_enabled">
-            <span class="text-success" v-if="product.is_enabled">啟用</span>
-            <span v-else>未啟用</span>
+          <!-- @click="product.is_enabled = !product.is_enabled" -->
+          <td>
+            <div class="form-check form-switch">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                :id="`enableSwitch${product.id}`"
+                v-model="product.is_enabled"
+                @change="updateEnableStatus(product)"
+              />
+              <label
+                class="form-check-label"
+                :for="`enableSwitch${product.id}}`"
+              >
+                <span class="text-success" v-if="product.is_enabled">啟用</span>
+                <span v-else>未啟用</span>
+              </label>
+            </div>
           </td>
           <td>
             <div class="btn-group">
@@ -73,18 +88,18 @@
       ref="adminProductModal"
     ></AdminProduct>
     <!-- Delete Product Modal -->
-    <DeleteProduct
+    <DelModal
       :del-item="tempProduct"
       @remove-item="removeProduct"
       @get-items="getProducts"
       ref="delModal"
-    ></DeleteProduct>
+    ></DelModal>
   </div>
 </template>
 
 <script>
 import AdminProduct from '@/components/AdminProduct.vue'
-import DeleteProduct from '@/components/DeleteProduct.vue'
+import DelModal from '@/components/DelModal.vue'
 import Pagination from '@/components/Pagination.vue'
 import Loading from '@/components/Loading.vue'
 
@@ -106,7 +121,7 @@ export default {
   inject: ['emitter'],
   components: {
     AdminProduct,
-    DeleteProduct,
+    DelModal,
     Pagination,
     Loading
   },
@@ -114,7 +129,7 @@ export default {
     // Products Execution Start
     getProducts (page = 1) {
       this.isReady = false
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admi/products?page=${page}`
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/products?page=${page}`
       this.$http
         .get(url)
         .then(res => {
@@ -124,7 +139,7 @@ export default {
         })
         .catch(err => {
           this.$httpMessageState(err.response, '錯誤訊息')
-          this.isReady = true
+          // this.isReady = true
         })
     },
     addProduct () {
@@ -175,7 +190,7 @@ export default {
     },
     removeProduct (id) {
       this.isReady = false
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${this.tempProduct.id}`
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${id}`
       this.$http
         .delete(url)
         .then(res => {
@@ -187,6 +202,28 @@ export default {
           alert(err.data.message)
         })
       this.$refs.delModal.hideModal()
+    },
+    updateEnableStatus (product) {
+      this.isReady = false
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${product.id}`
+      this.$http
+        .put(url, { data: product })
+        .then(res => {
+          this.emitter.emit('push-message', {
+            style: 'success',
+            title: '已啟用產品',
+            content: res.data.message
+          })
+          // this.getProducts()
+          this.isReady = true
+        })
+        .catch(err => {
+          this.emitter.emit('push-message', {
+            style: 'danger',
+            title: '啟用產品失敗',
+            content: err.data.message
+          })
+        })
     },
     // Products Execution End
 
@@ -201,12 +238,12 @@ export default {
         this.tempProduct = { ...product }
         this.isNew = false
       }
-      // 此處是 modalMixin 下的 openModal() 方法
+      // modalMixin 下的 openModal() 方法
       this.$refs.adminProductModal.openModal()
     },
     openDelModal (product) {
       this.tempProduct = { ...product }
-      // 此處是 modalMixin 下的 openModal() 方法
+      // modalMixin 下的 openModal() 方法
       this.$refs.delModal.openModal()
     }
     // Modal Execution End
