@@ -1,4 +1,5 @@
 <template>
+  <Loading :is-ready="isReady"></Loading>
   <div class="container">
     <UserProduct
       :id="productId"
@@ -66,35 +67,48 @@
         </tr>
       </tbody>
     </table>
+    <!-- Pagination -->
+    <Pagination :pages="pagination" @emit-pages="getProducts"></Pagination>
   </div>
 </template>
 
 <script>
 import UserProduct from '@/components/UserProduct.vue'
+import Pagination from '@/components/Pagination.vue'
+import Loading from '@/components/Loading.vue'
+
 export default {
   data () {
     return {
       products: [],
+      pagination: {},
       productId: '',
-      isLoading: ''
+      isLoading: '',
+      isReady: false
     }
   },
   components: {
-    UserProduct
+    UserProduct,
+    Pagination,
+    Loading
   },
+  inject: ['emitter'],
   methods: {
-    getProducts () {
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/products/all`
+    getProducts (page = 1) {
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/products?page=${page}`
       this.$http
         .get(url)
         .then(res => {
           this.products = res.data.products
+          this.pagination = res.data.pagination
+          this.isReady = true
         })
         .catch(err => {
-          alert(err.data.message)
+          this.$httpMessageState(err.response, '錯誤訊息')
         })
     },
     addToCart (id, qty = 1) {
+      this.isReady = false
       const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`
       this.isLoading = id
       const cart = {
@@ -104,11 +118,15 @@ export default {
       this.$http
         .post(url, { data: cart })
         .then(res => {
-          alert(res.data.message)
+          this.$httpMessageState(res, '加入購物車')
+          // alert(res.data.message)
           this.isLoading = ''
+          this.isReady = true
         })
         .catch(err => {
-          alert(err.data.message)
+          this.$httpMessageState(err.response, '加入購物車')
+          this.isReady = true
+          // alert(err.data.message)
         })
     },
     openProductModal (id) {
