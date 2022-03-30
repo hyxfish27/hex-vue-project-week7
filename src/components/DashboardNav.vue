@@ -28,7 +28,7 @@
               前台商品
             </router-link>
             <router-link class="nav-link" to="/user/cart">
-              購物車
+              <i class="bi bi-bag-fill h4"></i>
             </router-link>
             <button
               class="btn btn-danger nav-link"
