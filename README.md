@@ -1,5 +1,7 @@
 # hex-vue-project-week7
 
+https://hyxfish27.github.io/hex-vue-project-week7/
+
 ## Project setup
 ```
 npm install
