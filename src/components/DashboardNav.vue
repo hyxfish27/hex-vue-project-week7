@@ -28,7 +28,7 @@
               前台商品
             </router-link>
             <router-link class="nav-link" to="/user/cart">
-              <p>購物車</p>
+              購物車
             </router-link>
             <button
               class="btn btn-danger nav-link"

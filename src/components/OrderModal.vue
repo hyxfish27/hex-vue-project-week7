@@ -56,13 +56,13 @@
                   </tr>
                   <tr>
                     <th>下單時間</th>
-                    <td>{{}}</td>
+                    <td>{{ $filters.timeConvert(tempOrder.create_at) }}</td>
                   </tr>
                   <tr>
                     <th>付款時間</th>
                     <td>
                       <span v-if="tempOrder.paid_date">
-                        {{}}
+                        {{ $filters.timeConvert(tempOrder.paid_date) }}
                       </span>
                       <span v-else>時間不正確</span>
                     </td>
@@ -79,7 +79,7 @@
                   <tr>
                     <th>總金額</th>
                     <td>
-                      {{}}
+                      {{ $filters.currency(tempOrder.total) }}
                     </td>
                   </tr>
                 </tbody>
@@ -92,13 +92,13 @@
                   <tr></tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in tempOrder.products" :key="item.id">
+                  <tr v-for="order in tempOrder.products" :key="order.id">
                     <th>
-                      {{ item.product.title }}
+                      {{ order.product.title }}
                     </th>
-                    <td>{{ item.qty }} / {{ item.product.unit }}</td>
+                    <td>{{ order.qty }} / {{ order.product.unit }}</td>
                     <td class="text-end">
-                      {{}}
+                      {{ $filters.currency(order.product.price) }}
                     </td>
                   </tr>
                 </tbody>
@@ -106,18 +106,30 @@
             </div>
             <div class="col-12">
               <div class="d-flex justify-content-end">
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                    v-model="tempOrder.is_paid"
-                  />
-                  <label class="form-check-label" for="flexCheckDefault">
-                    <span v-if="tempOrder.is_paid">已付款</span>
-                    <span v-else>未付款</span>
-                  </label>
+                <div class="row">
+                  <div class="col-12 col-md-6">
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        :id="`enableSwitch${tempOrder.id}`"
+                        v-model="tempOrder.is_paid"
+                        :true-value="true"
+                        :false-value="false"
+                      />
+                      <label
+                        class="form-check-label"
+                        :for="`enableSwitch${tempOrder.id}}`"
+                      >
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <span class="text-primary" v-if="tempOrder.is_paid"
+                      >已付款</span
+                    >
+                    <span class="text-muted" v-else>未付款</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -126,15 +138,15 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-outline-secondary"
+            class="btn btn-secondary text-white"
             data-bs-dismiss="modal"
           >
             取消
           </button>
           <button
             type="button"
-            class="btn btn-primary"
-            @click="$emit('update-paid', tempOrder)"
+            class="btn btn-primary text-white"
+            @click="$emit('enable-status', tempOrder)"
           >
             修改付款狀態
           </button>
@@ -145,58 +157,11 @@
 </template>
 
 <script>
-// 需要匯入 Modal 元件
-import Modal from 'bootstrap/js/dist/modal'
+// 在 modal 元件呼叫 mixin 方法
+import modalMixin from '@/mixins/modalMixin'
 
 export default {
-  data () {
-    return {
-      modal: ''
-    }
-  },
   props: ['temp-order'],
-  methods: {
-    // addProduct () {
-    //   const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product`
-    //   this.$http
-    //     .post(url, { data: this.tempProduct })
-    //     .then(res => {
-    //       // 發送 get-product 到外層呼叫 getProducts 方法
-    //       this.$emit('get-products')
-    //       alert(res.data.message)
-    //     })
-    //     .catch(err => {
-    //       alert(err.data.message)
-    //     })
-    //   this.hideProductModal()
-    // },
-    // updateProduct () {
-    //   const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${this.tempProduct.id}`
-    //   this.$http
-    //     .put(url, { data: this.tempProduct })
-    //     .then(res => {
-    //       this.$emit('get-orders')
-    //       alert(res.data.message)
-    //     })
-    //     .catch(err => {
-    //       alert(err.data.message)
-    //     })
-    //   this.hideProductModal()
-    // },
-    createModal () {
-      // 將元件中的 ref="modal" 進行 Modal 的初始化，
-      // 並 assign 到 data 中的 productModal
-      this.modal = new Modal(this.$refs.modal)
-    },
-    openModal () {
-      this.modal.show()
-    },
-    hideModal () {
-      this.modal.hide()
-    }
-  },
-  mounted () {
-    this.createModal()
-  }
+  mixins: [modalMixin]
 }
 </script>

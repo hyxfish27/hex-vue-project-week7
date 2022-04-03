@@ -71,7 +71,7 @@
             <td class="text-end">
               <div class="row justify-content-center">
                 <div class="col-md-6" v-if="cart.final_total !== cart.total">
-                  <del>原價 : {{ cart.total }}</del>
+                  <del>原價 : {{ $filters.currency(cart.total) }}</del>
                 </div>
                 <div class="col-md-6 text-center">
                   <small
@@ -79,7 +79,7 @@
                     v-if="cart.final_total !== cart.total"
                     >折扣價：</small
                   >
-                  {{ cart.final_total }}
+                  {{ $filters.currency(cart.final_total) }}
                 </div>
               </div>
             </td>
@@ -89,11 +89,13 @@
       <tfoot>
         <tr>
           <td colspan="3" class="text-end">總計</td>
-          <td class="text-end">{{ cartData.total }}</td>
+          <td class="text-end">{{ $filters.currency(cartData.total) }}</td>
         </tr>
         <tr v-if="cartData.final_total !== cartData.total">
           <td colspan="3" class="text-end text-success">折扣價</td>
-          <td class="text-end text-success">{{ cartData.final_total }}</td>
+          <td class="text-end text-success">
+            {{ $filters.currency(cartData.final_total) }}
+          </td>
         </tr>
       </tfoot>
     </table>
@@ -307,7 +309,7 @@ export default {
         .post(url, { data: order })
         .then(response => {
           // this.$httpMessageState(response, '建立訂單')
-          this.$router.push(`/user/checkout/${response.data.orderId}`)
+          this.$router.push(`/user/order/${response.data.orderId}`)
           this.$refs.form.resetForm()
           this.isLoading = false
         })

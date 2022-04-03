@@ -44,14 +44,16 @@
                 type="checkbox"
                 :id="`enableSwitch${product.id}`"
                 v-model="product.is_enabled"
+                :true-value="1"
+                :false-value="0"
                 @change="updateEnableStatus(product)"
               />
               <label
                 class="form-check-label"
                 :for="`enableSwitch${product.id}}`"
               >
-                <span class="text-success" v-if="product.is_enabled">啟用</span>
-                <span v-else>未啟用</span>
+                <span class="text-primary" v-if="product.is_enabled">上架</span>
+                <span class="text-light" v-else>下架</span>
               </label>
             </div>
           </td>
@@ -194,12 +196,12 @@ export default {
       this.$http
         .delete(url)
         .then(res => {
-          alert(res.data.message)
+          this.$httpMessageState(res.data.message, '錯誤訊息')
           this.getProducts()
           this.isReady = true
         })
         .catch(err => {
-          alert(err.data.message)
+          this.$httpMessageState(err.response, '錯誤訊息')
         })
       this.$refs.delModal.hideModal()
     },

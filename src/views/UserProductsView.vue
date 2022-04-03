@@ -95,6 +95,7 @@ export default {
   inject: ['emitter'],
   methods: {
     getProducts (page = 1) {
+      this.isReady = false
       const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/products?page=${page}`
       this.$http
         .get(url)
