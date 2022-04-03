@@ -9,6 +9,8 @@ import AllRules from '@vee-validate/rules'
 import { localize, setLocale } from '@vee-validate/i18n'
 import zhTW from '@vee-validate/i18n/dist/locale/zh_TW.json'
 import $httpMessageState from '@/methods/pushMessageState'
+import { timeConvert, currency } from './methods/filters'
+
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import App from './App.vue'
@@ -28,6 +30,10 @@ setLocale('zh_TW')
 const app = createApp(App)
 
 app.config.globalProperties.$httpMessageState = $httpMessageState
+app.config.globalProperties.$filters = {
+  timeConvert,
+  currency
+}
 
 app.component('Form', Form)
 app.component('Field', Field)
